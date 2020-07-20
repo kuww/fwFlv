@@ -145,7 +145,7 @@ export default {
       //标签页切换媒体播放时间重置
       document.addEventListener(
         visibilityChange,
-        function () {
+        function() {
           if (document[state] === visible) {
             let videoEleObj = document.getElementsByTagName("video");
             for (let video in videoEleObj) {
@@ -165,7 +165,7 @@ export default {
   mounted() {
     this.init();
     var that = this;
-    this.videoElement.addEventListener("progress", function () {
+    this.videoElement.addEventListener("progress", function() {
       if (that.flvPlayer.buffered.length > 0) {
         that.poster_show = false;
       } else {
@@ -212,5 +212,8 @@ video {
   top: 0;
   bottom: 0;
   z-index: 1000;
+}
+p {
+  font-size: 14px;
 }
 </style>
