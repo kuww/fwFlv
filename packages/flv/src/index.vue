@@ -233,6 +233,9 @@ export default {
     });
     this.visibilitychange();
   },
+  beforeDestroy() {
+    this.flvPlayer.destroy();
+  },
 };
 </script>
 
