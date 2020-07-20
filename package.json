@@ -53,5 +53,6 @@
   "contributors": [
     "fwFlv"
   ],
-  "main": "lib/fwflv.umd.min.js"
+  "main": "lib/fwflv.umd.min.js",
+  "name": "fwflv"
 }
