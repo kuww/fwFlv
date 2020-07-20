@@ -240,11 +240,6 @@ video {
   bottom: 0;
   z-index: 1000;
 }
-.loading_title {
-  font-size: 14px;
-  height: 20px;
-  line-height: 20px;
-}
 
 video::-webkit-media-controls-fullscreen-button {
   display: none !important;
@@ -267,5 +262,13 @@ video::-webkit-media-controls-overflow-button {
 
 video::-webkit-media-controls-enclosure {
   display: none !important;
+}
+</style>
+
+<style>
+.loading_title {
+  font-size: 14px;
+  height: 20px;
+  line-height: 20px;
 }
 </style>
