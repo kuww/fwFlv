@@ -1,6 +1,6 @@
 {
   "name": "fwflv",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -45,5 +45,6 @@
     "flv",
     "rtmp",
     "vue"
-  ]
+  ],
+  "main": "lib/fwflv.umd.min.js"
 }
