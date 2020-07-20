@@ -1,6 +1,6 @@
 {
   "name": "fwflv",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -53,5 +53,5 @@
   "contributors": [
     "fwFlv"
   ],
-  "main": "lib/fwflv.umd.min.js"
+  "main": "lib/fwflv.umd.js"
 }
