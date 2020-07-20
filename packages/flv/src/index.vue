@@ -8,8 +8,8 @@
       :muted="muted"
       :width="width"
       :height="height"
-      autoplay
       @dblclick="btnFull"
+      @click="onlyBtnFull"
     ></video>
     <div class="video_btn_dom" v-if="!poster_show">
       <svg
@@ -81,7 +81,7 @@ export default {
     <path fill="#ffffff" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" transform="rotate(275.098 25 25)">
         <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform>
     </path>
-</svg><p class="loading_title">加载中...</p></div>`,
+</svg><p class="loading_title" style="font-size:14px;height:20px;line-height:20px">加载中...</p></div>`,
       type: String,
     },
   },
@@ -122,6 +122,19 @@ export default {
         this.videoElement.msRequestFullscreen();
       }
     },
+    onlyBtnFull() {
+      if (this.videoElement.paused) {
+        this.videoElement.play();
+        let videoEleObj = document.getElementsByTagName("video");
+        for (let video in videoEleObj) {
+          let buffered = videoEleObj[video].buffered;
+          if (buffered && buffered.length > 0) {
+            videoEleObj[video].currentTime = buffered.end(0) - 2;
+          }
+        }
+      }
+    },
+
     visibilitychange() {
       var hidden;
       var visibilityChange;
@@ -156,7 +169,7 @@ export default {
             for (let video in videoEleObj) {
               let buffered = videoEleObj[video].buffered;
               if (buffered && buffered.length > 0) {
-                videoEleObj[video].currentTime = buffered.end(0) - 0.5;
+                videoEleObj[video].currentTime = buffered.end(0) - 2;
               }
             }
           } else if (document[state] === hidden) {
@@ -175,6 +188,15 @@ export default {
         that.poster_show = false;
       } else {
         that.poster_show = true;
+      }
+    });
+    this.videoElement.addEventListener("play", function() {
+      let videoEleObj = document.getElementsByTagName("video");
+      for (let video in videoEleObj) {
+        let buffered = videoEleObj[video].buffered;
+        if (buffered && buffered.length > 0) {
+          videoEleObj[video].currentTime = buffered.end(0) - 1;
+        }
       }
     });
     this.visibilitychange();
@@ -222,5 +244,28 @@ video {
   font-size: 14px;
   height: 20px;
   line-height: 20px;
+}
+
+video::-webkit-media-controls-fullscreen-button {
+  display: none !important;
+}
+
+/*video默认aduio音量按钮*/
+video::-webkit-media-controls-mute-button {
+  display: none !important;
+}
+
+/*video默认aduio音量按钮*/
+video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
+/*video默认setting按钮*/
+video::-webkit-media-controls-overflow-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+  display: none !important;
 }
 </style>
