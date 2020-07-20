@@ -1,7 +1,6 @@
 {
   "name": "fwflv",
   "version": "1.0.0",
-  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -41,10 +40,18 @@
     "last 2 versions",
     "not dead"
   ],
+  "license": "MIT",
   "keywords": [
     "flv",
     "rtmp",
     "vue"
+  ],
+  "repository": {
+    "type": "https",
+    "url": "https://github.com/kuww/fwFlv"
+  },
+  "contributors": [
+    "fwFlv"
   ],
   "main": "lib/fwflv.umd.min.js"
 }
