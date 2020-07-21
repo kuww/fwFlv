@@ -29,35 +29,30 @@
                 ></animateTransform>
               </path>
             </svg>
-            <p
-              class="loading_title"
-            >
-              加载中... 
+            <p class="loading_title">
+              加载中...
             </p>
           </div>
         </slot>
       </div>
       <div class="poster" v-else>
-          <div>
-            <svg
-              viewBox="0 0 1024 1024"
-              xmlns="http://www.w3.org/2000/svg"
-              width="30px" 
-              height="30px"
-              style="enable-background:new 0 0 0 50"
-            >
-              <path 
-                fill="#ffffff"
-                d="M910.336 186.368l-72.704-72.704L512 439.808 186.368 113.664 113.664 186.368 439.808 512l-326.144 325.632 72.704 72.704L512 584.192l325.632 326.144 72.704-72.704L584.192 512l326.144-325.632z"
-              >
-              </path>
-            </svg>
-            <p
-              class="error_title"
-            >
-              {{errStr}}
-            </p>
-          </div>
+        <div>
+          <svg
+            viewBox="0 0 1024 1024"
+            xmlns="http://www.w3.org/2000/svg"
+            width="30px"
+            height="30px"
+            style="enable-background:new 0 0 0 50"
+          >
+            <path
+              fill="#ffffff"
+              d="M910.336 186.368l-72.704-72.704L512 439.808 186.368 113.664 113.664 186.368 439.808 512l-326.144 325.632 72.704 72.704L512 584.192l325.632 326.144 72.704-72.704L584.192 512l326.144-325.632z"
+            ></path>
+          </svg>
+          <p class="error_title">
+            {{ errStr }}
+          </p>
+        </div>
       </div>
     </div>
     <video
@@ -137,17 +132,17 @@ export default {
       default: ``,
       type: String,
     },
-    liveRetry:{
+    liveRetry: {
       default: 5,
       type: Number,
-    }
+    },
   },
   data() {
     return {
       flvPlayer: null,
       videoElement: null,
       poster_show: true,
-      errStr:'',
+      errStr: "",
     };
   },
   methods: {
@@ -237,32 +232,31 @@ export default {
         false
       );
     },
-    // https://github.com/bilibili/flv.js/blob/master/src/player/player-errors.js
     playerStateError() {
-      this.flvPlayer.on('error', err => {
-        console.log('[FwFlvError] > ', err);
+      this.flvPlayer.on("error", (err) => {
+        console.log("[FwFlvError] > ", err);
         this.handleLiveRetry();
         this.handleErrorTips(err);
       });
     },
     // 播放失败重试
     handleLiveRetry() {
-      var liveRetry = this.liveRetry
+      var liveRetry = this.liveRetry;
       while (liveRetry > 0) {
-        liveRetry --
-        this.init()
+        liveRetry--;
+        this.init();
       }
     },
     handleErrorTips(err) {
       var that = this;
-      if (err === 'NetworkError') {
-          that.errStr = '视频流错误';
-      } else if (err ==='MediaError') {
-        that.errStr = '播放器错误';
-      } else if (err === 'OtherError') {
-        that.errStr = '未知错误';
+      if (err === "NetworkError") {
+        that.errStr = "视频流错误";
+      } else if (err === "MediaError") {
+        that.errStr = "播放器错误";
+      } else if (err === "OtherError") {
+        that.errStr = "未知错误";
       }
-    }
+    },
   },
   mounted() {
     this.init();
@@ -354,7 +348,8 @@ video::-webkit-media-controls-enclosure {
 </style>
 
 <style>
-.loading_title,.error_title{
+.loading_title,
+.error_title {
   font-size: 14px;
   height: 20px;
   line-height: 20px;
