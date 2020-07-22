@@ -133,7 +133,7 @@ export default {
       type: String,
     },
     liveRetry: {
-      default: 5,
+      default: 50,
       type: Number,
     },
   },
@@ -166,7 +166,7 @@ export default {
       }
     },
     btnFull() {
-      if (this.isLive) return false;
+      if (!this.isLive) return false;
       if (document.fullscreenElement !== this.videoElement) {
         if (this.videoElement.requestFullscreen) {
           this.videoElement.requestFullscreen();
