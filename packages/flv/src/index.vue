@@ -60,7 +60,7 @@
       :muted="muted"
       :width="width"
       :height="height"
-      @dblclick="btnFull"
+      @dblclick.prevent="btnFull"
       @click="onlyBtnFull"
     ></video>
     <div class="video_btn_dom" v-if="!poster_show">
@@ -143,6 +143,7 @@ export default {
       videoElement: null,
       poster_show: true,
       errStr: "",
+      cleanBuff: null,
     };
   },
   methods: {
@@ -165,27 +166,48 @@ export default {
       }
     },
     btnFull() {
-      if (this.videoElement.requestFullscreen) {
-        this.videoElement.requestFullscreen();
-      } else if (this.videoElement.mozRequestFullScreen) {
-        this.videoElement.mozRequestFullScreen();
-      } else if (this.videoElement.webkitRequestFullscreen) {
-        this.videoElement.webkitRequestFullscreen();
-      } else if (this.videoElement.msRequestFullscreen) {
-        this.videoElement.msRequestFullscreen();
-      }
-    },
-    onlyBtnFull() {
-      if (this.videoElement.paused) {
-        this.videoElement.play();
-        let videoEleObj = document.getElementsByTagName("video");
-        for (let video in videoEleObj) {
-          let buffered = videoEleObj[video].buffered;
-          if (buffered && buffered.length > 0) {
-            videoEleObj[video].currentTime = buffered.end(0) - 2;
-          }
+      if (this.isLive) return false;
+      if (document.fullscreenElement !== this.videoElement) {
+        if (this.videoElement.requestFullscreen) {
+          this.videoElement.requestFullscreen();
+        } else if (this.videoElement.mozRequestFullScreen) {
+          this.videoElement.mozRequestFullScreen();
+        } else if (this.videoElement.webkitRequestFullscreen) {
+          this.videoElement.webkitRequestFullscreen();
+        } else if (this.videoElement.msRequestFullscreen) {
+          this.videoElement.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullScreen) {
+          document.exitFullScreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
         }
       }
+    },
+    onlyBtnFull(e) {
+      if (this.isLive) {
+        e.preventDefault();
+        return;
+      }
+      // if (this.videoElement.paused) {
+      //   if (document.fullscreenElement !== this.videoElement) {
+      //     this.videoElement.play();
+      //   }
+      //   if (this.videoElement) {
+      //     let buffered = this.videoElement.buffered;
+      //     if (buffered.length > 0) {
+      //       let end = buffered.end(0);
+      //       if (end - this.videoElement.currentTime > 0.15) {
+      //         this.videoElement.currentTime = end - 0.1;
+      //       }
+      //     }
+      //   }
+      // }
     },
 
     visibilitychange() {
@@ -218,11 +240,13 @@ export default {
         visibilityChange,
         function() {
           if (document[state] === visible) {
-            let videoEleObj = document.getElementsByTagName("video");
-            for (let video in videoEleObj) {
-              let buffered = videoEleObj[video].buffered;
-              if (buffered && buffered.length > 0) {
-                videoEleObj[video].currentTime = buffered.end(0) - 2;
+            if (this.videoElement) {
+              let buffered = this.videoElement.buffered;
+              if (buffered.length > 0) {
+                let end = buffered.end(0);
+                if (end - this.videoElement.currentTime > 0.15) {
+                  this.videoElement.currentTime = end - 0.1;
+                }
               }
             }
           } else if (document[state] === hidden) {
@@ -257,6 +281,22 @@ export default {
         that.errStr = "未知错误";
       }
     },
+    jumpToEndBuffer() {
+      if (this.videoElement) {
+        let buffered = this.videoElement.buffered;
+        if (buffered.length > 0) {
+          let end = buffered.end(0);
+          if (end - this.videoElement.currentTime > 0.15) {
+            this.videoElement.currentTime = end - 0.1;
+          }
+        }
+      }
+    },
+    changeFull() {
+      // this.videoElement.addEventListener("fullscreenchange", function(e) {
+      //   console.log();
+      // });
+    },
   },
   mounted() {
     this.init();
@@ -269,19 +309,28 @@ export default {
       }
     });
     this.videoElement.addEventListener("play", function() {
-      let videoEleObj = document.getElementsByTagName("video");
-      for (let video in videoEleObj) {
-        let buffered = videoEleObj[video].buffered;
-        if (buffered && buffered.length > 0) {
-          videoEleObj[video].currentTime = buffered.end(0) - 1;
+      if (!this.videoElement) return;
+      let buffered = this.videoElement.buffered;
+      if (buffered.length > 0) {
+        let end = buffered.end(0);
+        if (end - this.videoElement.currentTime > 0.15) {
+          this.videoElement.currentTime = end - 0.1;
         }
       }
     });
     this.visibilitychange();
     this.playerStateError();
+    this.changeFull();
+    this.cleanBuff = setInterval(this.jumpToEndBuffer, 3 * 10 * 1000);
   },
   beforeDestroy() {
+    this.flvPlayer.pause();
+    this.flvPlayer.unload();
+    this.flvPlayer.detachMediaElement();
     this.flvPlayer.destroy();
+    this.flvPlayer = null;
+    window.clearInterval(this.cleanBuff);
+    this.cleanBuff = null;
   },
 };
 </script>
