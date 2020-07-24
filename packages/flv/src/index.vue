@@ -319,7 +319,7 @@ export default {
     });
     this.visibilitychange();
     this.playerStateError();
-    this.cleanBuff = setInterval(this.jumpToEndBuffer, 3 * 10 * 1000);
+    this.cleanBuff = setInterval(this.jumpToEndBuffer, 120 * 10 * 1000);
   },
   beforeDestroy() {
     this.flvPlayer.pause();
