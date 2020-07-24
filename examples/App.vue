@@ -1,12 +1,28 @@
 <template>
   <div id="app">
-    <fw-video src="ws://192.168.210.113:8089/ws/live/16149334"> </fw-video>
+    <fw-video
+      src="ws://localhost:8000/live/test.flv"
+      @reload="reload"
+      :key="key"
+    >
+    </fw-video>
   </div>
 </template>
 
 <script>
 export default {
   name: "App",
+  data() {
+    return {
+      key: 1,
+    };
+  },
+  methods: {
+    reload() {
+      console.log(3);
+      this.key = ++this.key;
+    },
+  },
 };
 </script>
 

@@ -144,6 +144,12 @@ export default {
       poster_show: true,
       errStr: "",
       cleanBuff: null,
+      mediaSource: null,
+      mediaSourceObjectURL: null,
+      ws: null,
+      receiveData: "",
+      receiveTime: null,
+      anReceiveData: null,
     };
   },
   methods: {
@@ -163,6 +169,17 @@ export default {
         this.flvPlayer.attachMediaElement(this.videoElement);
         this.flvPlayer.load();
         this.flvPlayer.play();
+        if (type === "flv") {
+          let that = this;
+          this.ws = new WebSocket(videoSrc);
+          this.ws.onmessage = function(e) {
+            that.receiveData = e.data;
+            if (that.receiveTime !== null)
+              window.clearTimeout(that.receiveTime);
+            that.receiveTime = setTimeout(that.changeData, 3 * 1000);
+          };
+          // this.receiveTime = setInterval(this.changeData, 3 * 1000);
+        }
       }
     },
     btnFull() {
@@ -194,20 +211,18 @@ export default {
         e.preventDefault();
         return;
       }
-      // if (this.videoElement.paused) {
-      //   if (document.fullscreenElement !== this.videoElement) {
-      //     this.videoElement.play();
+    },
+
+    changeData() {
+      // if (this.anReceiveData !== this.receiveData) {
+      //   if (this.receiveData !== "") {
+      //     this.anReceiveData = this.receiveData;
       //   }
-      //   if (this.videoElement) {
-      //     let buffered = this.videoElement.buffered;
-      //     if (buffered.length > 0) {
-      //       let end = buffered.end(0);
-      //       if (end - this.videoElement.currentTime > 0.15) {
-      //         this.videoElement.currentTime = end - 0.1;
-      //       }
-      //     }
-      //   }
+      // } else {
+      //   this.$emit("reload", 1);
       // }
+
+      this.$emit("reload", 1);
     },
 
     visibilitychange() {
@@ -235,7 +250,6 @@ export default {
         visibilityChange = "webkitvisibilitychange";
         visible = "webkitVisibilityState";
       }
-      //标签页切换媒体播放时间重置
       document.addEventListener(
         visibilityChange,
         function() {
@@ -292,11 +306,6 @@ export default {
         }
       }
     },
-    changeFull() {
-      // this.videoElement.addEventListener("fullscreenchange", function(e) {
-      //   console.log();
-      // });
-    },
   },
   mounted() {
     this.init();
@@ -308,19 +317,8 @@ export default {
         that.poster_show = true;
       }
     });
-    this.videoElement.addEventListener("play", function() {
-      if (!this.videoElement) return;
-      let buffered = this.videoElement.buffered;
-      if (buffered.length > 0) {
-        let end = buffered.end(0);
-        if (end - this.videoElement.currentTime > 0.15) {
-          this.videoElement.currentTime = end - 0.1;
-        }
-      }
-    });
     this.visibilitychange();
     this.playerStateError();
-    this.changeFull();
     this.cleanBuff = setInterval(this.jumpToEndBuffer, 3 * 10 * 1000);
   },
   beforeDestroy() {
@@ -329,7 +327,9 @@ export default {
     this.flvPlayer.detachMediaElement();
     this.flvPlayer.destroy();
     this.flvPlayer = null;
+    this.mediaSource = null;
     window.clearInterval(this.cleanBuff);
+    window.clearTimeout(this.receiveTime);
     this.cleanBuff = null;
   },
 };
