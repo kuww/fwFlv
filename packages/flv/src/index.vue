@@ -176,7 +176,7 @@ export default {
             that.receiveData = e.data;
             if (that.receiveTime !== null)
               window.clearTimeout(that.receiveTime);
-            that.receiveTime = setTimeout(that.changeData, 3 * 1000);
+            that.receiveTime = setTimeout(that.changeData, 30 * 1000);
           };
           // this.receiveTime = setInterval(this.changeData, 3 * 1000);
         }
