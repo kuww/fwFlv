@@ -326,6 +326,8 @@ export default {
     this.flvPlayer.unload();
     this.flvPlayer.detachMediaElement();
     this.flvPlayer.destroy();
+    this.ws = close();
+    this.ws = null;
     this.flvPlayer = null;
     this.mediaSource = null;
     window.clearInterval(this.cleanBuff);
