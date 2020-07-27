@@ -160,12 +160,19 @@ export default {
         var isLive = this.isLive;
         var hasAudio = this.hasAudio;
         var type = this.type;
-        this.flvPlayer = flvPlayer.createPlayer({
-          url: videoSrc,
-          isLive: isLive,
-          type: type,
-          hasAudio: hasAudio,
-        });
+        this.flvPlayer = flvPlayer.createPlayer(
+          {
+            url: videoSrc,
+            isLive: isLive,
+            type: type,
+            hasAudio: hasAudio,
+          },
+          {
+            enableWorker: true,
+            enableStashBuffer: false,
+            stashInitialSize: 128, // 减少首桢显示等待时长
+          }
+        );
         this.flvPlayer.attachMediaElement(this.videoElement);
         this.flvPlayer.load();
         this.flvPlayer.play();
@@ -214,14 +221,6 @@ export default {
     },
 
     changeData() {
-      // if (this.anReceiveData !== this.receiveData) {
-      //   if (this.receiveData !== "") {
-      //     this.anReceiveData = this.receiveData;
-      //   }
-      // } else {
-      //   this.$emit("reload", 1);
-      // }
-
       this.$emit("reload", 1);
     },
 
