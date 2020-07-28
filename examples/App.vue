@@ -1,9 +1,10 @@
 <template>
   <div id="app">
     <fw-video
-      src="ws://192.168.210.113:8089/ws/live/16149334"
+      src="https://tc-tct.douyucdn2.cn/dyliveflv3a"
       @reload="reload"
       :key="key"
+      @error="error"
     >
     </fw-video>
   </div>
@@ -22,6 +23,7 @@ export default {
       console.log(3);
       this.key = ++this.key;
     },
+    error() {},
   },
 };
 </script>

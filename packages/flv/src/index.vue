@@ -60,6 +60,7 @@
       :muted="muted"
       :width="width"
       :height="height"
+      :autoplay="isLive"
       @dblclick.prevent="btnFull"
       @click="onlyBtnFull"
     ></video>
@@ -177,14 +178,14 @@ export default {
         this.flvPlayer.load();
         this.flvPlayer.play();
         if (type === "flv") {
-          let that = this;
-          this.ws = new WebSocket(videoSrc);
-          this.ws.onmessage = function(e) {
-            that.receiveData = e.data;
-            if (that.receiveTime !== null)
-              window.clearTimeout(that.receiveTime);
-            that.receiveTime = setTimeout(that.changeData, 30 * 1000);
-          };
+          // let that = this;
+          // this.ws = new WebSocket(videoSrc);
+          // this.ws.onmessage = function(e) {
+          //   that.receiveData = e.data;
+          //   if (that.receiveTime !== null)
+          //     window.clearTimeout(that.receiveTime);
+          //   that.receiveTime = setTimeout(that.changeData, 30 * 1000);
+          // };
           // this.receiveTime = setInterval(this.changeData, 3 * 1000);
         }
       }
@@ -271,19 +272,19 @@ export default {
     },
     playerStateError() {
       this.flvPlayer.on("error", (err) => {
-        console.log("[FwFlvError] > ", err);
         this.handleLiveRetry();
-        this.handleErrorTips(err);
+        // this.handleErrorTips(err);
+        this.$emit("error", err);
       });
     },
-    // 播放失败重试
-    handleLiveRetry() {
-      var liveRetry = this.liveRetry;
-      while (liveRetry > 0) {
-        liveRetry--;
-        this.init();
-      }
-    },
+    // // 播放失败重试
+    // handleLiveRetry() {
+    //   var liveRetry = this.liveRetry;
+    //   while (liveRetry > 0) {
+    //     liveRetry--;
+    //     this.init();
+    //   }
+    // },
     handleErrorTips(err) {
       var that = this;
       if (err === "NetworkError") {
