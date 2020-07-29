@@ -178,14 +178,14 @@ export default {
         this.flvPlayer.load();
         this.flvPlayer.play();
         if (type === "flv") {
-          // let that = this;
-          // this.ws = new WebSocket(videoSrc);
-          // this.ws.onmessage = function(e) {
-          //   that.receiveData = e.data;
-          //   if (that.receiveTime !== null)
-          //     window.clearTimeout(that.receiveTime);
-          //   that.receiveTime = setTimeout(that.changeData, 30 * 1000);
-          // };
+          let that = this;
+          this.ws = new WebSocket(videoSrc);
+          this.ws.onmessage = function(e) {
+            that.receiveData = e.data;
+            if (that.receiveTime !== null)
+              window.clearTimeout(that.receiveTime);
+            that.receiveTime = setTimeout(that.changeData, 30 * 1000);
+          };
           // this.receiveTime = setInterval(this.changeData, 3 * 1000);
         }
       }
