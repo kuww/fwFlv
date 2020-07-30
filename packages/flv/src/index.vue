@@ -186,6 +186,9 @@ export default {
               window.clearTimeout(that.receiveTime);
             that.receiveTime = setTimeout(that.changeData, 30 * 1000);
           };
+          this.ws.error = function() {
+            that.changeData;
+          };
           // this.receiveTime = setInterval(this.changeData, 3 * 1000);
         }
       }
@@ -326,7 +329,7 @@ export default {
     this.flvPlayer.unload();
     this.flvPlayer.detachMediaElement();
     this.flvPlayer.destroy();
-    this.ws = close();
+    this.ws.close();
     this.ws = null;
     this.flvPlayer = null;
     this.mediaSource = null;
