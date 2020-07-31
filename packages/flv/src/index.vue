@@ -177,20 +177,20 @@ export default {
         this.flvPlayer.attachMediaElement(this.videoElement);
         this.flvPlayer.load();
         this.flvPlayer.play();
-        if (type === "flv") {
-          let that = this;
-          this.ws = new WebSocket(videoSrc);
-          this.ws.onmessage = function(e) {
-            that.receiveData = e.data;
-            if (that.receiveTime !== null)
-              window.clearTimeout(that.receiveTime);
-            that.receiveTime = setTimeout(that.changeData, 30 * 1000);
-          };
-          this.ws.error = function() {
-            that.changeData;
-          };
-          // this.receiveTime = setInterval(this.changeData, 3 * 1000);
-        }
+        // if (type === "flv") {
+        //   let that = this;
+        //   this.ws = new WebSocket(videoSrc);
+        //   this.ws.onmessage = function(e) {
+        //     that.receiveData = e.data;
+        //     if (that.receiveTime !== null)
+        //       window.clearTimeout(that.receiveTime);
+        //     that.receiveTime = setTimeout(that.changeData, 30 * 1000);
+        //   };
+        //   this.ws.error = function() {
+        //     that.changeData;
+        //   };
+        //   // this.receiveTime = setInterval(this.changeData, 3 * 1000);
+        // }
       }
     },
     btnFull() {
@@ -225,6 +225,7 @@ export default {
     },
 
     changeData() {
+      console.log(22);
       this.$emit("reload", 1);
     },
 
@@ -280,14 +281,6 @@ export default {
         this.$emit("error", err);
       });
     },
-    // // 播放失败重试
-    // handleLiveRetry() {
-    //   var liveRetry = this.liveRetry;
-    //   while (liveRetry > 0) {
-    //     liveRetry--;
-    //     this.init();
-    //   }
-    // },
     handleErrorTips(err) {
       var that = this;
       if (err === "NetworkError") {
@@ -310,6 +303,25 @@ export default {
       }
     },
   },
+  watch: {
+    poster_show: {
+      handler(val) {
+        if (!val) {
+          let _ws = this.flvPlayer._transmuxer._controller._ioctl._loader;
+          let that = this;
+          _ws.on("message", function(e) {
+            if (e) {
+              window.clearTimeout(that.receiveTime);
+              that.receiveTime = setTimeout(that.changeData, 30 * 1000);
+            }
+          });
+          _ws.on("error", function() {
+            that.changeData;
+          });
+        }
+      },
+    },
+  },
   mounted() {
     this.init();
     var that = this;
@@ -329,8 +341,6 @@ export default {
     this.flvPlayer.unload();
     this.flvPlayer.detachMediaElement();
     this.flvPlayer.destroy();
-    this.ws.close();
-    this.ws = null;
     this.flvPlayer = null;
     this.mediaSource = null;
     window.clearInterval(this.cleanBuff);

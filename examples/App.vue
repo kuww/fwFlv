@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <fw-video
-      src="https://tc-tct.douyucdn2.cn/dyliveflv3a"
+      src="ws://localhost:8000/live/test.flv"
       @reload="reload"
       :key="key"
       @error="error"
