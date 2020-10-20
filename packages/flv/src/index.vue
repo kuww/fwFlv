@@ -276,8 +276,8 @@ export default {
     },
     playerStateError() {
       this.flvPlayer.on("error", (err) => {
-        this.handleLiveRetry();
-        // this.handleErrorTips(err);
+        // this.handleLiveRetry();
+        this.handleErrorTips(err);
         this.$emit("error", err);
       });
     },
@@ -368,14 +368,8 @@ video {
   display: block;
 }
 .poster {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 50%;
-  transform: translateYs s(-50%);
-  color: white;
+
+  color: white; 
 }
 .poster_mask {
   background: rgba(0, 0, 0, 0.5);
@@ -385,6 +379,9 @@ video {
   top: 0;
   bottom: 0;
   z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 video::-webkit-media-controls-fullscreen-button {

@@ -1,5 +1,7 @@
 # fwFlv
 
+![Image text](https://img.shields.io/badge/build-pass-green)
+
 基于 flv 的 vue 视频播放器
 
 在 main.js 引入下面代码
