@@ -282,6 +282,7 @@ export default {
       });
     },
     handleErrorTips(err) {
+      console.log(err)
       var that = this;
       if (err === "NetworkError") {
         that.errStr = "视频流错误";
