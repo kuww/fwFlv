@@ -226,7 +226,7 @@ export default {
 
     changeData() {
       console.log(22);
-      this.$emit("reload", 1);
+      this.$emit("reload", this.id);
     },
 
     visibilitychange() {
