@@ -37,8 +37,7 @@
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions",
-    "not dead"
+    "last 2 versions"
   ],
   "license": "MIT",
   "keywords": [
