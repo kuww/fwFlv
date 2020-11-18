@@ -140,6 +140,10 @@ export default {
     loadingTime:{
       default:30,
       type:Number
+    },
+    errorShow:{
+      default:true,
+      type:Boolean
     }
   },
   data() {
@@ -286,6 +290,7 @@ export default {
       });
     },
     handleErrorTips(err) {
+      if(!this.errorShow) return
       console.log(err)
       var that = this;
       if (err === "NetworkError") {
