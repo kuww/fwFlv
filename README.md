@@ -40,6 +40,8 @@ type 视频的类型 默认 flv
 
 是否直播 默认 true
 
+loadingTime 默认30s  30秒收不到数据从新loaded
+
 slot 设置加载效果
 ### 新增
 

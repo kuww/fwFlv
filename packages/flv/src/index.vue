@@ -138,7 +138,7 @@ export default {
       type: Number,
     },
     loadingTime:{
-      defaule:30,
+      default:30,
       type:Number
     }
   },
@@ -229,6 +229,7 @@ export default {
     },
 
     changeData() {
+      console.log(3)
       this.$emit("reload", this.id);
     },
 
@@ -316,6 +317,7 @@ export default {
           _ws.on("message", function(e) {
             if (e) {
               window.clearTimeout(that.receiveTime);
+              console.log(that.loadingTime)
               that.receiveTime = setTimeout(that.changeData, that.loadingTime * 1000);
             }
           });
