@@ -262,21 +262,24 @@ export default {
         visibilityChange = "webkitvisibilitychange";
         visible = "webkitVisibilityState";
       }
+      let _this = this
       document.addEventListener(
         visibilityChange,
         function() {
           if (document[state] === visible) {
-            if (this.videoElement) {
-              let buffered = this.videoElement.buffered;
+            console.log(this)
+            if (_this.videoElement) {
+              let buffered = _this.videoElement.buffered;
+              console.log(buffered)
               if (buffered.length > 0) {
                 let end = buffered.end(0);
-                if (end - this.videoElement.currentTime > 0.15) {
-                  this.videoElement.currentTime = end - 0.1;
+                if (end - _this.videoElement.currentTime > 0.15) {
+                  _this.videoElement.currentTime = end - 0.1;
                 }
               }
             }
           } else if (document[state] === hidden) {
-            //console.log(33)
+            console.log(33)
           }
         },
         false
@@ -322,7 +325,7 @@ export default {
           _ws.on("message", function(e) {
             if (e) {
               window.clearTimeout(that.receiveTime);
-              console.log(that.loadingTime)
+              // console.log(that.loadingTime)
               that.receiveTime = setTimeout(that.changeData, that.loadingTime * 1000);
             }
           });

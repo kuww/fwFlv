@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <fw-video
-      src="ws://192.168.10.16:8089/ws/live/11711918"
+      src="ws://192.168.10.16:8089/ws/live/11711917"
       @reload="reload"
       :key="key"
       @error="error"
