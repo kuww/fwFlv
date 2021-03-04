@@ -1,5 +1,5 @@
 <template>
-  <div class="video" :style="{ height: height + 'px', width: width + 'px' }">
+  <div class="video">
     <div class="poster_mask" v-if="poster_show">
       <div class="poster" v-if="!errStr">
         <slot>
@@ -36,7 +36,7 @@
         </slot>
       </div>
       <div class="poster" v-else>
-        <div>
+        <div v-if="errorShow">
           <svg
             viewBox="0 0 1024 1024"
             xmlns="http://www.w3.org/2000/svg"
@@ -58,8 +58,6 @@
     <video
       :id="id"
       :muted="muted"
-      :width="width"
-      :height="height"
       :autoplay="isLive"
       @dblclick.prevent="btnFull"
       @click="onlyBtnFull"
@@ -137,14 +135,14 @@ export default {
       default: 50,
       type: Number,
     },
-    loadingTime:{
-      default:30,
-      type:Number
+    loadingTime: {
+      default: 30,
+      type: Number,
     },
-    errorShow:{
-      default:true,
-      type:Boolean
-    }
+    errorShow: {
+      default: true,
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -233,7 +231,7 @@ export default {
     },
 
     changeData() {
-      console.log(3)
+      // console.log(3)
       this.$emit("reload", this.id);
     },
 
@@ -262,15 +260,15 @@ export default {
         visibilityChange = "webkitvisibilitychange";
         visible = "webkitVisibilityState";
       }
-      let _this = this
+      let _this = this;
       document.addEventListener(
         visibilityChange,
         function() {
           if (document[state] === visible) {
-            console.log(this)
+            // console.log(this)
             if (_this.videoElement) {
               let buffered = _this.videoElement.buffered;
-              console.log(buffered)
+              // console.log(buffered)
               if (buffered.length > 0) {
                 let end = buffered.end(0);
                 if (end - _this.videoElement.currentTime > 0.15) {
@@ -279,7 +277,7 @@ export default {
               }
             }
           } else if (document[state] === hidden) {
-            console.log(33)
+            // console.log(33)
           }
         },
         false
@@ -293,8 +291,8 @@ export default {
       });
     },
     handleErrorTips(err) {
-      if(!this.errorShow) return
-      console.log(err)
+      // if(!this.errorShow) return
+      // console.log(err)
       var that = this;
       if (err === "NetworkError") {
         that.errStr = "视频流错误";
@@ -326,7 +324,10 @@ export default {
             if (e) {
               window.clearTimeout(that.receiveTime);
               // console.log(that.loadingTime)
-              that.receiveTime = setTimeout(that.changeData, that.loadingTime * 1000);
+              that.receiveTime = setTimeout(
+                that.changeData,
+                that.loadingTime * 1000
+              );
             }
           });
           _ws.on("error", function() {
@@ -370,6 +371,8 @@ video {
 }
 .video {
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 .video_btn_dom {
   position: absolute;
@@ -382,8 +385,12 @@ video {
   display: block;
 }
 .poster {
-
-  color: white; 
+  color: white;
+}
+.video video {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
 }
 .poster_mask {
   background: rgba(0, 0, 0, 0.5);

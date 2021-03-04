@@ -1,10 +1,11 @@
 <template>
   <div id="app">
     <fw-video
-      src="ws://192.168.10.16:8089/ws/live/11711917"
+      src="ws://192.168.112.91:8089/ws/live/5754425"
       @reload="reload"
       :key="key"
       @error="error"
+      :errorShow="false"
     >
     </fw-video>
   </div>
@@ -36,5 +37,6 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  height: 300px;
 }
 </style>
