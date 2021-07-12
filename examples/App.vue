@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <fw-video
-      src="ws://192.168.8.202:8089/ws/live/14120809"
+      src="ws://192.168.8.202:8089/ws/live/14120809?time=‘ssds’"
       @reload="reload"
       :key="key"
       @error="error"
