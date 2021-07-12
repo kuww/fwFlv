@@ -1,11 +1,11 @@
 <template>
   <div id="app">
     <fw-video
-      src="ws://192.168.112.91:8089/ws/live/5754425"
+      src="ws://192.168.8.202:8089/ws/live/14120809"
       @reload="reload"
       :key="key"
       @error="error"
-      :errorShow="false"
+      :errorShow="true"
     >
     </fw-video>
   </div>
@@ -21,10 +21,12 @@ export default {
   },
   methods: {
     reload() {
-      console.log(3);
+      // console.log(3);
       this.key = ++this.key;
     },
-    error() {},
+    error() {
+      console.log("3333");
+    },
   },
 };
 </script>

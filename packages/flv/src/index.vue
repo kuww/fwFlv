@@ -136,7 +136,7 @@ export default {
       type: Number,
     },
     loadingTime: {
-      default: 30,
+      default: 10,
       type: Number,
     },
     errorShow: {
@@ -157,46 +157,42 @@ export default {
       receiveData: "",
       receiveTime: null,
       anReceiveData: null,
+      loadingTimer: null,
     };
   },
   methods: {
     init() {
       if (flvPlayer.isSupported()) {
-        this.videoElement = document.getElementById(this.id);
-        var videoSrc = this.src;
-        var isLive = this.isLive;
-        var hasAudio = this.hasAudio;
-        var type = this.type;
-        this.flvPlayer = flvPlayer.createPlayer(
-          {
-            url: videoSrc,
-            isLive: isLive,
-            type: type,
-            hasAudio: hasAudio,
-          },
-          {
-            enableWorker: true,
-            enableStashBuffer: false,
-            stashInitialSize: 128, // 减少首桢显示等待时长
-          }
-        );
-        this.flvPlayer.attachMediaElement(this.videoElement);
-        this.flvPlayer.load();
-        this.flvPlayer.play();
-        // if (type === "flv") {
-        //   let that = this;
-        //   this.ws = new WebSocket(videoSrc);
-        //   this.ws.onmessage = function(e) {
-        //     that.receiveData = e.data;
-        //     if (that.receiveTime !== null)
-        //       window.clearTimeout(that.receiveTime);
-        //     that.receiveTime = setTimeout(that.changeData, 30 * 1000);
-        //   };
-        //   this.ws.error = function() {
-        //     that.changeData;
-        //   };
-        //   // this.receiveTime = setInterval(this.changeData, 3 * 1000);
-        // }
+        try {
+          this.videoElement = document.getElementById(this.id);
+          var videoSrc = this.src;
+          var isLive = this.isLive;
+          var hasAudio = this.hasAudio;
+          var type = this.type;
+          this.flvPlayer = flvPlayer.createPlayer(
+            {
+              url: videoSrc,
+              isLive: isLive,
+              type: type,
+              hasAudio: hasAudio,
+            },
+            {
+              enableWorker: true,
+              enableStashBuffer: false,
+              stashInitialSize: 128, // 减少首桢显示等待时长
+            }
+          );
+          this.flvPlayer.attachMediaElement(this.videoElement);
+          this.flvPlayer.load();
+          this.flvPlayer.play();
+
+          this.loadingTimer = setTimeout(() => {
+            this.$emit("reload", this.id);
+            // console.log("掩饰");
+          }, this.loadingTime * 1000);
+        } catch (e) {
+          console.log(e);
+        }
       }
     },
     btnFull() {
@@ -292,7 +288,7 @@ export default {
     },
     handleErrorTips(err) {
       // if(!this.errorShow) return
-      // console.log(err)
+      console.log(err);
       var that = this;
       if (err === "NetworkError") {
         that.errStr = "视频流错误";
@@ -321,6 +317,10 @@ export default {
           let _ws = this.flvPlayer._transmuxer._controller._ioctl._loader;
           let that = this;
           _ws.on("message", function(e) {
+            if (that.loadingTimer) {
+              window.clearTimeout(that.loadingTimer);
+              that.loadingTimer = null;
+            }
             if (e) {
               window.clearTimeout(that.receiveTime);
               // console.log(that.loadingTime)
@@ -331,6 +331,10 @@ export default {
             }
           });
           _ws.on("error", function() {
+            if (that.loadingTimer) {
+              window.clearTimeout(that.loadingTimer);
+              that.loadingTimer = null;
+            }
             that.changeData;
           });
         }
@@ -340,9 +344,15 @@ export default {
   mounted() {
     this.init();
     var that = this;
+    // let _ws = this.flvPlayer;
+    // console.log(_ws);
     this.videoElement.addEventListener("progress", function() {
       if (that.flvPlayer.buffered.length > 0) {
         that.poster_show = false;
+        if (that.loadingTimer) {
+          window.clearTimeout(that.loadingTimer);
+          that.loadingTimer = null;
+        }
       } else {
         that.poster_show = true;
       }
@@ -352,6 +362,11 @@ export default {
     this.cleanBuff = setInterval(this.jumpToEndBuffer, 120 * 10 * 1000);
   },
   beforeDestroy() {
+    if (this.loadingTimer) {
+      window.clearTimeout(this.loadingTimer);
+      this.loadingTimer = null;
+    }
+
     this.flvPlayer.pause();
     this.flvPlayer.unload();
     this.flvPlayer.detachMediaElement();
